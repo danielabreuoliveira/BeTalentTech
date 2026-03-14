@@ -1,157 +1,114 @@
-# Payment API
+# Payment API - Multi Gateway
 
-API REST desenvolvida em Node.js para gerenciamento de transações, clientes, produtos e gateways de pagamento.
+API RESTful para gerenciamento de pagamentos utilizando múltiplos gateways.
 
-O sistema permite registrar transações vinculadas a clientes e gateways utilizando banco de dados MySQL.
-
----
-
-# Tecnologias utilizadas
-
-- Node.js
-- Express.js
-- MySQL
-- mysql2
-- dotenv
+O sistema tenta realizar cobranças seguindo a ordem de prioridade definida.
+Caso o primeiro gateway falhe, o sistema tenta automaticamente o próximo.
 
 ---
 
-# Estrutura do projeto
+# Tecnologias
 
-payment-api
-
-app.js
-
-src/
-
-config/
-db.js
-
-controllers/
-transactionController.js
-
-models/
-transactionModel.js
-
-routes/
-transactionRoutes.js
-
-services/
-transactionService.js
-
-package.json
+Node.js
+Express
+MySQL
+Axios
 
 ---
 
-# Como instalar e rodar o projeto
+# Como instalar e rodar
 
-### 1 Clonar o repositório
+## 1 Clonar repositório
 
-git clone https://github.com/seuusuario/payment-api.git
+git clone https://github.com/seuusuario/payment-api
 
-### 2 Entrar na pasta do projeto
-
-cd payment-api
-
-### 3 Instalar dependências
+## 2 Instalar dependências
 
 npm install
 
-### 4 Configurar banco de dados
-
-Criar banco MySQL:
+## 3 Configurar banco MySQL
 
 CREATE DATABASE payment_system;
 
-Importar as tabelas necessárias.
+Criar tabelas necessárias.
 
-### 5 Executar a API
+## 4 Rodar aplicação
 
 node app.js
 
-O servidor iniciará na porta:
+Servidor iniciará em:
 
 http://localhost:3000
 
 ---
 
-# Rotas da API
-
-## Criar transação
+# Estrutura da API
 
 POST /api/transactions
 
-### Exemplo de body
+Realiza uma nova transação.
+
+Exemplo de body:
 
 {
   "client": 1,
-  "gateway": 1,
-  "external_id": "TX123456",
-  "status": "approved",
-  "amount": 200,
-  "card_last_numbers": "1234"
-}
-
-### Resposta
-
-{
-  "message": "Transaction created successfully",
-  "transactionId": 10
+  "card_last_numbers": "1234",
+  "products": [
+    {
+      "product_id": 1,
+      "quantity": 2
+    },
+    {
+      "product_id": 2,
+      "quantity": 1
+    }
+  ]
 }
 
 ---
 
-# Estrutura do banco de dados
+# Funcionamento do Multi-Gateway
 
-## clients
-
-id  
-name  
-email  
-
-## gateways
-
-id  
-name  
-
-## products
-
-id  
-name  
-amount  
-
-## transactions
-
-id  
-client  
-gateway  
-external_id  
-status  
-amount  
-card_last_numbers  
-
-## transaction_products
-
-id  
-transaction_id  
-product_id  
-quantity  
+1 A API recebe uma requisição de compra  
+2 O sistema calcula o valor total com base nos produtos  
+3 Busca gateways ordenados por prioridade  
+4 Tenta realizar cobrança no primeiro gateway  
+5 Caso falhe, tenta no próximo gateway  
+6 Quando algum gateway retorna sucesso, a transação é registrada  
 
 ---
 
-# Outras informações relevantes
+# Fluxo do sistema
 
-- A API segue arquitetura em camadas:
-  - Routes
-  - Controllers
-  - Services
-  - Models
+Client Request
 
-- Controllers recebem requisições HTTP
-- Services aplicam regras de negócio
-- Models realizam operações no banco de dados
+↓
 
-- O banco utiliza chaves estrangeiras para garantir integridade entre tabelas.
+API
+
+↓
+
+Buscar produtos
+
+↓
+
+Calcular valor total
+
+↓
+
+Buscar gateways
+
+↓
+
+Tentar gateway 1
+
+↓
+
+Se falhar → gateway 2
+
+↓
+
+Salvar transação
 
 ---
 

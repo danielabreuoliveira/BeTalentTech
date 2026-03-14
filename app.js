@@ -1,19 +1,22 @@
-// Importa o framework Express
+// Importa o framework Express para criar a API
 const express = require("express");
+
+// Importa as rotas de transação
+const transactionRoutes = require("./src/routes/transactionRoutes");
 
 // Cria a aplicação
 const app = express();
 
-// Importa as rotas de transações
-const transactionRoutes = require("./src/routes/transactionRoutes");
-
-// Middleware para permitir que a API leia JSON nas requisições
+// Permite que a API receba dados em JSON
 app.use(express.json());
 
-// Prefixo das rotas da API
+// Define o prefixo das rotas da API
 app.use("/api", transactionRoutes);
 
-// Inicia o servidor na porta 3000
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000");
+// Define a porta do servidor
+const PORT = 3000;
+
+// Inicia o servidor
+app.listen(PORT, () => {
+  console.log(`Servidor rodando na porta ${PORT}`);
 });
