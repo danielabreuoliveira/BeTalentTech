@@ -1,51 +1,54 @@
 Desafio BeTalentTech – Sistema de Pagamentos Multi-Gateway
 Descrição do Projeto
 
-Este projeto é um sistema de gerenciamento de pagamentos multi-gateway construído com Node.js, Express, MySQL, Knex e VineJS.
-O sistema permite realizar transações de clientes, tentando os gateways ativos por ordem de prioridade e salvando apenas os últimos 4 dígitos do cartão para segurança.
+Este projeto é um sistema de gerenciamento de pagamentos multi-gateway desenvolvido com Node.js, Express, MySQL, Knex e VineJS.
+
+O sistema permite:
+
+Realizar transações de clientes.
+
+Tentar os gateways ativos seguindo a ordem de prioridade.
+
+Salvar apenas os últimos 4 dígitos do cartão por questões de segurança.
+
+Facilitar a adição de novos gateways de forma modular no futuro.
 
 Estrutura do Banco de Dados
 
-O banco foi estruturado com as seguintes tabelas:
+O banco de dados foi estruturado com as seguintes tabelas:
 
-users: id, email, password, role
-
-gateways: id, name, is_active, priority
-
-clients: id, name, email
-
-products: id, name, amount
-
-transactions: id, client, gateway, external_id, status, amount, card_last_numbers
-
-transaction_products (Nível 2): transaction_id, product_id, quantity
-
+Tabela	Colunas
+users	id, email, password, role
+gateways	id, name, is_active, priority
+clients	id, name, email
+products	id, name, amount
+transactions	id, client, gateway, external_id, status, amount, card_last_numbers
+transaction_products (Nível 2)	transaction_id, product_id, quantity
 Rotas do Sistema
 Rotas Públicas
 
-POST /api/login – Realizar login
+POST /api/login – Realizar login.
 
-POST /api/transacoes – Realizar uma compra (Gateway 1 ou 2)
+POST /api/transacoes – Realizar uma compra (Gateway 1 ou 2).
 
-Rotas Privadas (pendente para Nível 1)
+Rotas Privadas (pendente no Nível 1)
 
-CRUD de usuários
+CRUD de usuários.
 
-CRUD de produtos
+CRUD de produtos.
 
-Ativar/desativar gateways
+Ativar/desativar gateways.
 
-Alterar prioridade de gateways
+Alterar prioridade de gateways.
 
-Listar clientes e detalhes
+Listar clientes e seus detalhes.
 
-Listar transações e detalhes
+Listar transações e seus detalhes.
 
-Reembolso de transações
+Reembolso de transações.
 
 Gateways Mockados
-
-Gateway 1 – porta 3001
+Gateway 1 – Porta 3001
 
 JSON esperado:
 
@@ -59,7 +62,7 @@ JSON esperado:
 
 Sempre aprova qualquer transação.
 
-Gateway 2 – porta 3002
+Gateway 2 – Porta 3002
 
 JSON esperado:
 
@@ -81,7 +84,7 @@ MySQL
 
 NPM
 
-Instalação
+Instalação e Execução
 # Clonar repositório
 git clone <URL_DO_REPOSITORIO>
 cd desafioBeTalentTech
@@ -90,37 +93,35 @@ cd desafioBeTalentTech
 npm install
 
 # Criar banco de dados
-# (exemplo MySQL)
 CREATE DATABASE desafio_betalent;
 
 # Rodar o servidor
 npm run dev
-
-Testando os gateways
-# Rodar Gateway 1
+Testando os Gateways
+# Gateway 1
 node src/mocks/gateway1.js
 
-# Rodar Gateway 2
+# Gateway 2
 node src/mocks/gateway2.js
 Dificuldades Encontradas
 
-Diferença de JSON entre os gateways – Cada gateway recebia campos diferentes (amount vs valor, cardNumber vs numeroCartao).
+Diferença de JSON entre os gateways – Campos diferentes (amount vs valor, cardNumber vs numeroCartao).
 
-Erro de tamanho de coluna – O número do cartão completo ultrapassava o limite da coluna card_last_numbers; foi necessário salvar apenas os últimos 4 dígitos.
+Erro de tamanho de coluna – Número completo do cartão ultrapassava o limite; foi necessário salvar apenas os últimos 4 dígitos.
 
-Erros de módulos e imports – Alguns pacotes como axios, bcryptjs e @vinejs/vine não estavam sendo reconhecidos; ajustes no package.json e importações foram feitos.
+Erros de módulos e imports – Pacotes como axios, bcryptjs e @vinejs/vine precisaram ser ajustados.
 
-Rotas undefined – Erros ao declarar rotas ou controllers que não estavam corretamente exportados.
+Rotas undefined – Controllers ou rotas não exportadas corretamente causavam erro.
 
-Reembolso inicial – O endpoint /transacoes/reembolso precisava identificar o gateway correto e enviar payload correto para que funcionasse.
+Reembolso inicial – O endpoint /transacoes/reembolso precisava identificar corretamente o gateway e enviar o payload correto.
 
 Funcionalidades Implementadas
 
-Criação de transações com tentativa em múltiplos gateways por ordem de prioridade.
+Criação de transações com tentativa em múltiplos gateways por prioridade.
 
 Salva transações com últimos 4 dígitos do cartão.
 
-Gateways mockados que aceitam qualquer valor (facilitando testes).
+Gateways mockados aceitam qualquer valor, facilitando testes.
 
 Endpoint de listagem de transações.
 
@@ -128,16 +129,18 @@ Funcionalidades Pendentes (Nível 1 / Futuro Nível 2-3)
 
 CRUD completo de usuários com roles.
 
-CRUD de produtos com roles.
+CRUD completo de produtos com roles.
 
 Ativação/desativação e alteração de prioridade de gateways via API.
 
-Detalhes de clientes e todas suas compras.
+Listagem detalhada de clientes e todas suas compras.
 
-Endpoint de reembolso integrado com roles e logs.
+Endpoint de reembolso com validação por roles e logs.
 
-Testes automatizados completos (TDD).
+Testes automatizados (TDD).
 
 Docker Compose com MySQL, aplicação e gateways mockados.
 
-POSTMAN- https://documenter.getpostman.com/view/52983232/2sBXigMYhM
+Documentação de Testes
+
+Disponível no Postman: Clique aqui
