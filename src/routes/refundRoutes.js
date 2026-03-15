@@ -1,7 +1,8 @@
 const express = require('express');
 const router = express.Router();
-const { refundTransaction } = require('../controllers/refundController');
+const refundController = require('../controllers/refundController');
 
-router.post('/:id', refundTransaction);
+// Rota para solicitar reembolso pelo id da transação
+router.post('/:id', refundController.refundTransaction);
 
 module.exports = router;
