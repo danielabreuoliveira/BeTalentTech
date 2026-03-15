@@ -1,146 +1,160 @@
-Desafio BeTalentTech – Sistema de Pagamentos Multi-Gateway
-Descrição do Projeto
+# Payment API
 
-Este projeto é um sistema de gerenciamento de pagamentos multi-gateway desenvolvido com Node.js, Express, MySQL, Knex e VineJS.
+API REST desenvolvida em Node.js para gerenciamento de transações, clientes, produtos e gateways de pagamento.
 
-O sistema permite:
+O sistema permite registrar transações vinculadas a clientes e gateways utilizando banco de dados MySQL.
 
-Realizar transações de clientes.
+---
 
-Tentar os gateways ativos seguindo a ordem de prioridade.
+# Tecnologias utilizadas
 
-Salvar apenas os últimos 4 dígitos do cartão por questões de segurança.
+- Node.js
+- Express.js
+- MySQL
+- mysql2
+- dotenv
 
-Facilitar a adição de novos gateways de forma modular no futuro.
+---
 
-Estrutura do Banco de Dados
+# Estrutura do projeto
 
-O banco de dados foi estruturado com as seguintes tabelas:
+payment-api
 
-Tabela	Colunas
-users	id, email, password, role
-gateways	id, name, is_active, priority
-clients	id, name, email
-products	id, name, amount
-transactions	id, client, gateway, external_id, status, amount, card_last_numbers
-transaction_products (Nível 2)	transaction_id, product_id, quantity
-Rotas do Sistema
-Rotas Públicas
+app.js
 
-POST /api/login – Realizar login.
+src/
 
-POST /api/transacoes – Realizar uma compra (Gateway 1 ou 2).
+config/
+db.js
 
-Rotas Privadas (pendente no Nível 1)
+controllers/
+transactionController.js
 
-CRUD de usuários.
+models/
+transactionModel.js
 
-CRUD de produtos.
+routes/
+transactionRoutes.js
 
-Ativar/desativar gateways.
+services/
+transactionService.js
 
-Alterar prioridade de gateways.
+package.json
 
-Listar clientes e seus detalhes.
+---
 
-Listar transações e seus detalhes.
+# Como instalar e rodar o projeto
 
-Reembolso de transações.
+### 1 Clonar o repositório
 
-Gateways Mockados
-Gateway 1 – Porta 3001
+git clone https://github.com/seuusuario/payment-api.git
 
-JSON esperado:
+### 2 Entrar na pasta do projeto
 
-{
-  "amount": 1000,
-  "name": "tester",
-  "email": "tester@email.com",
-  "cardNumber": "5569000000006063",
-  "cvv": "010"
-}
+cd payment-api
 
-Sempre aprova qualquer transação.
+### 3 Instalar dependências
 
-Gateway 2 – Porta 3002
-
-JSON esperado:
-
-{
-  "valor": 1000,
-  "nome": "tester",
-  "email": "tester@email.com",
-  "numeroCartao": "5569000000006063",
-  "cvv": "010"
-}
-
-Sempre aprova qualquer transação.
-
-Requisitos para Rodar o Projeto
-
-Node.js ≥ 18
-
-MySQL
-
-NPM
-
-Instalação e Execução
-# Clonar repositório
-git clone <URL_DO_REPOSITORIO>
-cd desafioBeTalentTech
-
-# Instalar dependências
 npm install
 
-# Criar banco de dados
-CREATE DATABASE desafio_betalent;
+### 4 Configurar banco de dados
 
-# Rodar o servidor
-npm run dev
-Testando os Gateways
-# Gateway 1
-node src/mocks/gateway1.js
+Criar banco MySQL:
 
-# Gateway 2
-node src/mocks/gateway2.js
-Dificuldades Encontradas
+CREATE DATABASE payment_system;
 
-Diferença de JSON entre os gateways – Campos diferentes (amount vs valor, cardNumber vs numeroCartao).
+Importar as tabelas necessárias.
 
-Erro de tamanho de coluna – Número completo do cartão ultrapassava o limite; foi necessário salvar apenas os últimos 4 dígitos.
+### 5 Executar a API
 
-Erros de módulos e imports – Pacotes como axios, bcryptjs e @vinejs/vine precisaram ser ajustados.
+node app.js
 
-Rotas undefined – Controllers ou rotas não exportadas corretamente causavam erro.
+O servidor iniciará na porta:
 
-Reembolso inicial – O endpoint /transacoes/reembolso precisava identificar corretamente o gateway e enviar o payload correto.
+http://localhost:3000
 
-Funcionalidades Implementadas
+---
 
-Criação de transações com tentativa em múltiplos gateways por prioridade.
+# Rotas da API
 
-Salva transações com últimos 4 dígitos do cartão.
+## Criar transação
 
-Gateways mockados aceitam qualquer valor, facilitando testes.
+POST /api/transactions
 
-Endpoint de listagem de transações.
+### Exemplo de body
 
-Funcionalidades Pendentes (Nível 1 / Futuro Nível 2-3)
+{
+  "client": 1,
+  "gateway": 1,
+  "external_id": "TX123456",
+  "status": "approved",
+  "amount": 200,
+  "card_last_numbers": "1234"
+}
 
-CRUD completo de usuários com roles.
+### Resposta
 
-CRUD completo de produtos com roles.
+{
+  "message": "Transaction created successfully",
+  "transactionId": 10
+}
 
-Ativação/desativação e alteração de prioridade de gateways via API.
+---
 
-Listagem detalhada de clientes e todas suas compras.
+# Estrutura do banco de dados
 
-Endpoint de reembolso com validação por roles e logs.
+## clients
 
-Testes automatizados (TDD).
+id  
+name  
+email  
 
-Docker Compose com MySQL, aplicação e gateways mockados.
+## gateways
 
-Documentação de Testes
+id  
+name  
 
-Disponível no Postman: Clique aqui
+## products
+
+id  
+name  
+amount  
+
+## transactions
+
+id  
+client  
+gateway  
+external_id  
+status  
+amount  
+card_last_numbers  
+
+## transaction_products
+
+id  
+transaction_id  
+product_id  
+quantity  
+
+---
+
+# Outras informações relevantes
+
+- A API segue arquitetura em camadas:
+  - Routes
+  - Controllers
+  - Services
+  - Models
+
+- Controllers recebem requisições HTTP
+- Services aplicam regras de negócio
+- Models realizam operações no banco de dados
+
+- O banco utiliza chaves estrangeiras para garantir integridade entre tabelas.
+
+---
+
+# Autor
+
+Daniel de Abreu Oliveira
