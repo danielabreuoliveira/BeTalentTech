@@ -1,26 +1,22 @@
 {
-  "name": "desafiobetalenttech",
+  "name": "desafio-be-talent-tech",
   "version": "1.0.0",
-  "description": "",
-  "main": "app.js",
+  "description": "Sistema de pagamentos multi-gateway Nível 1",
+  "main": "src/server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "node src/server.js",
+    "start": "node src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Daniel de Abreu Oliveira",
   "license": "ISC",
-  "type": "commonjs",
   "dependencies": {
-    "@vinejs/vine": "^4.3.0",
-    "axios": "^1.13.6",
-    "cors": "^2.8.6",
-    "dotenv": "^17.3.1",
-    "express": "^5.2.1",
+    "@vinejs/vine": "^2.1.0",
+    "axios": "^1.8.4",
+    "bcryptjs": "^3.0.3",
+    "express": "^4.21.2",
+    "jsonwebtoken": "^9.0.0",
     "knex": "^3.1.0",
-    "mysql2": "^3.19.1"
-  },
-  "devDependencies": {
-    "jest": "^30.3.0",
-    "supertest": "^7.2.2"
+    "mysql2": "^3.14.0"
   }
 }

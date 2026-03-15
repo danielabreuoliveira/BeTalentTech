@@ -1,18 +1,8 @@
-// Importa o Express
-const express = require("express");
-
-// Cria um roteador
+const express = require('express');
 const router = express.Router();
+const transactionController = require('../controllers/transactionController');
 
-// Importa o controller responsável pelas transações
-const transactionController = require("../controllers/transactionController");
+router.post('/', transactionController.createTransaction);
+router.get('/', transactionController.listTransactions);
 
-/*
-Rota responsável por criar uma nova transação
-
-POST /api/transactions
-*/
-router.post("/transactions", transactionController.createTransaction);
-
-// Exporta o roteador para ser usado no app.js
 module.exports = router;

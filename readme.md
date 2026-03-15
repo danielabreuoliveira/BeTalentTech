@@ -1,117 +1,143 @@
-# Payment API - Multi Gateway
+Desafio BeTalentTech – Sistema de Pagamentos Multi-Gateway
+Descrição do Projeto
 
-API RESTful para gerenciamento de pagamentos utilizando múltiplos gateways.
+Este projeto é um sistema de gerenciamento de pagamentos multi-gateway construído com Node.js, Express, MySQL, Knex e VineJS.
+O sistema permite realizar transações de clientes, tentando os gateways ativos por ordem de prioridade e salvando apenas os últimos 4 dígitos do cartão para segurança.
 
-O sistema tenta realizar cobranças seguindo a ordem de prioridade definida.
-Caso o primeiro gateway falhe, o sistema tenta automaticamente o próximo.
+Estrutura do Banco de Dados
 
----
+O banco foi estruturado com as seguintes tabelas:
 
-# Tecnologias
+users: id, email, password, role
 
-Node.js
-Express
-MySQL
-Axios
+gateways: id, name, is_active, priority
 
----
+clients: id, name, email
 
-# Como instalar e rodar
+products: id, name, amount
 
-## 1 Clonar repositório
+transactions: id, client, gateway, external_id, status, amount, card_last_numbers
 
-git clone https://github.com/seuusuario/payment-api
+transaction_products (Nível 2): transaction_id, product_id, quantity
 
-## 2 Instalar dependências
+Rotas do Sistema
+Rotas Públicas
 
-npm install
+POST /api/login – Realizar login
 
-## 3 Configurar banco MySQL
+POST /api/transacoes – Realizar uma compra (Gateway 1 ou 2)
 
-CREATE DATABASE payment_system;
+Rotas Privadas (pendente para Nível 1)
 
-Criar tabelas necessárias.
+CRUD de usuários
 
-## 4 Rodar aplicação
+CRUD de produtos
 
-node app.js
+Ativar/desativar gateways
 
-Servidor iniciará em:
+Alterar prioridade de gateways
 
-http://localhost:3000
+Listar clientes e detalhes
 
----
+Listar transações e detalhes
 
-# Estrutura da API
+Reembolso de transações
 
-POST /api/transactions
+Gateways Mockados
 
-Realiza uma nova transação.
+Gateway 1 – porta 3001
 
-Exemplo de body:
+JSON esperado:
 
 {
-  "client": 1,
-  "card_last_numbers": "1234",
-  "products": [
-    {
-      "product_id": 1,
-      "quantity": 2
-    },
-    {
-      "product_id": 2,
-      "quantity": 1
-    }
-  ]
+  "amount": 1000,
+  "name": "tester",
+  "email": "tester@email.com",
+  "cardNumber": "5569000000006063",
+  "cvv": "010"
 }
 
----
+Sempre aprova qualquer transação.
 
-# Funcionamento do Multi-Gateway
+Gateway 2 – porta 3002
 
-1 A API recebe uma requisição de compra  
-2 O sistema calcula o valor total com base nos produtos  
-3 Busca gateways ordenados por prioridade  
-4 Tenta realizar cobrança no primeiro gateway  
-5 Caso falhe, tenta no próximo gateway  
-6 Quando algum gateway retorna sucesso, a transação é registrada  
+JSON esperado:
 
----
+{
+  "valor": 1000,
+  "nome": "tester",
+  "email": "tester@email.com",
+  "numeroCartao": "5569000000006063",
+  "cvv": "010"
+}
 
-# Fluxo do sistema
+Sempre aprova qualquer transação.
 
-Client Request
+Requisitos para Rodar o Projeto
 
-↓
+Node.js ≥ 18
 
-API
+MySQL
 
-↓
+NPM
 
-Buscar produtos
+Instalação
+# Clonar repositório
+git clone <URL_DO_REPOSITORIO>
+cd desafioBeTalentTech
 
-↓
+# Instalar dependências
+npm install
 
-Calcular valor total
+# Criar banco de dados
+# (exemplo MySQL)
+CREATE DATABASE desafio_betalent;
 
-↓
+# Rodar o servidor
+npm run dev
 
-Buscar gateways
+Testando os gateways
+# Rodar Gateway 1
+node src/mocks/gateway1.js
 
-↓
+# Rodar Gateway 2
+node src/mocks/gateway2.js
+Dificuldades Encontradas
 
-Tentar gateway 1
+Diferença de JSON entre os gateways – Cada gateway recebia campos diferentes (amount vs valor, cardNumber vs numeroCartao).
 
-↓
+Erro de tamanho de coluna – O número do cartão completo ultrapassava o limite da coluna card_last_numbers; foi necessário salvar apenas os últimos 4 dígitos.
 
-Se falhar → gateway 2
+Erros de módulos e imports – Alguns pacotes como axios, bcryptjs e @vinejs/vine não estavam sendo reconhecidos; ajustes no package.json e importações foram feitos.
 
-↓
+Rotas undefined – Erros ao declarar rotas ou controllers que não estavam corretamente exportados.
 
-Salvar transação
+Reembolso inicial – O endpoint /transacoes/reembolso precisava identificar o gateway correto e enviar payload correto para que funcionasse.
 
----
+Funcionalidades Implementadas
 
-# Autor
+Criação de transações com tentativa em múltiplos gateways por ordem de prioridade.
 
-Daniel de Abreu Oliveira
+Salva transações com últimos 4 dígitos do cartão.
+
+Gateways mockados que aceitam qualquer valor (facilitando testes).
+
+Endpoint de listagem de transações.
+
+Funcionalidades Pendentes (Nível 1 / Futuro Nível 2-3)
+
+CRUD completo de usuários com roles.
+
+CRUD de produtos com roles.
+
+Ativação/desativação e alteração de prioridade de gateways via API.
+
+Detalhes de clientes e todas suas compras.
+
+Endpoint de reembolso integrado com roles e logs.
+
+Testes automatizados completos (TDD).
+
+Docker Compose com MySQL, aplicação e gateways mockados.
+
+POSTMAN- https://documenter.getpostman.com/view/52983232/2sBXigMYhM
